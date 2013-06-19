@@ -122,6 +122,14 @@ public abstract class AvroConsumerTestSupport extends AvroTestSupport {
         Object[] request = {key, value};
         requestorForWrongMessages.request("get", request);
     }
+    
+    @Test
+    public void testInOnlyReflectSingleParameterNotSet() throws Exception {
+        initializeTranceiver();
+        Object[] request = {100};
+        reflectRequestor.request("setAge", request);
+        Assert.assertEquals(0, testReflection.getAge());
+    }
 
     @Test
     public void testInOut() throws Exception {

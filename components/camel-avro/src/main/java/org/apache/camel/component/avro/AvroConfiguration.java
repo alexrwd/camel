@@ -16,14 +16,16 @@
  */
 package org.apache.camel.component.avro;
 
+import static org.apache.camel.component.avro.AvroConstants.AVRO_HTTP_TRANSPORT;
+import static org.apache.camel.component.avro.AvroConstants.AVRO_MESSAGE_NAME_SEPARATOR;
+import static org.apache.camel.component.avro.AvroConstants.AVRO_NETTY_TRANSPORT;
+
 import java.net.URI;
 import java.util.Map;
 
 import org.apache.avro.Protocol;
-
 import org.apache.camel.RuntimeCamelException;
 import org.apache.commons.lang.StringUtils;
-import static org.apache.camel.component.avro.AvroConstants.*;
 
 public class AvroConfiguration implements Cloneable {
 
@@ -36,6 +38,7 @@ public class AvroConfiguration implements Cloneable {
     private String messageName;
     private String uriAuthority;
     private boolean isReflectionProtocol;
+    private Boolean singleParameter;
 
 	public AvroConfiguration copy() {
         try {
@@ -135,5 +138,13 @@ public class AvroConfiguration implements Cloneable {
 
 	public void setReflectionProtocol(boolean isReflectionProtocol) {
 		this.isReflectionProtocol = isReflectionProtocol;
+	}
+	
+	public Boolean getSingleParameter() {
+		return singleParameter;
+	}
+
+	public void setSingleParameter(Boolean singleParameter) {
+		this.singleParameter = singleParameter;
 	}
 }

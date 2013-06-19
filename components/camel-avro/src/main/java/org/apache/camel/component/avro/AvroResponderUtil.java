@@ -5,8 +5,6 @@ import static org.apache.camel.component.avro.AvroConstants.AVRO_NETTY_TRANSPORT
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
@@ -19,6 +17,7 @@ import org.apache.avro.ipc.Server;
 import org.apache.avro.specific.SpecificData;
 import org.apache.camel.Exchange;
 import org.apache.camel.util.ExchangeHelper;
+import org.apache.commons.lang.BooleanUtils;
 
 public class AvroResponderUtil {
 
@@ -87,12 +86,13 @@ public class AvroResponderUtil {
 	 *  
 	 * @param	message Avro message
 	 * @param	request Avro request
+	 * @param	singleParameter Indicates that called method has single parameter 
 	 * @return	Parameters of RPC method invocation
 	 */
-	static <T extends SpecificData> Object extractParams(Protocol.Message message, Object request) {
+	static <T extends SpecificData> Object extractParams(Protocol.Message message, Object request, Boolean singleParameter) {
 		int numParams = message.getRequest().getFields().size();
         
-        if(numParams == 1) {
+        if(BooleanUtils.isTrue(singleParameter) && numParams == 1) {
         	Object param;
         	Field field = message.getRequest().getFields().get(0);
         	Class<T> paramType = T.get().getClass(field.schema());
@@ -102,9 +102,11 @@ public class AvroResponderUtil {
         		param = ((GenericRecord) request).get(field.name());
         	return param;
         } else {
-        	List<Object> params =  new ArrayList<Object>();
+        	int i = 0;
+        	Object[] params =  new Object[numParams];
 			for (Schema.Field param : message.getRequest().getFields()) {
-				params.add(((GenericRecord) request).get(param.name()));
+				params[i] = ((GenericRecord) request).get(param.name());
+				i++;
 			}
 			return params;
         }

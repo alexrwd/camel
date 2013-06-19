@@ -34,7 +34,7 @@ public class AvroReflectResponder extends ReflectResponder implements
         
         if(consumer == null) throw new AvroComponentException("No consumer defined for message: " + message.getName());
         
-        Object params = AvroResponderUtil.<ReflectData>extractParams(message, request);
+        Object params = AvroResponderUtil.<ReflectData>extractParams(message, request, consumer.getEndpoint().getConfiguration().getSingleParameter());
         
         return AvroResponderUtil.processExchange(consumer, message, params);
     }
