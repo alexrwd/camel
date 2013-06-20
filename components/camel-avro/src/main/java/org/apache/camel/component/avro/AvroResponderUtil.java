@@ -67,8 +67,9 @@ public class AvroResponderUtil {
 	 * @param message	Message on which exchange is created
 	 * @param params	Params of exchange
 	 * @return			Response of exchange processing
+	 * @throws Exception 
 	 */
-	static Object processExchange(AvroConsumer consumer, Protocol.Message message, Object params) {
+	static Object processExchange(AvroConsumer consumer, Protocol.Message message, Object params) throws Exception {
 		Object response;
 		Exchange exchange = consumer.getEndpoint().createExchange(message, params);
 
@@ -87,10 +88,10 @@ public class AvroResponderUtil {
         boolean failed = exchange.isFailed();
         if (failed) {
             if (exchange.getException() != null) {
-                response = exchange.getException();
+                throw exchange.getException();
             } else {
                 // failed and no exception, must be a fault
-                response = exchange.getOut().getBody();
+                throw new AvroComponentException("Camel processing error.");
             }
         }
 		return response;
